@@ -1,0 +1,10 @@
+{
+  "name": "adventureland",
+  "version": "1.0.0",
+  "scripts": {
+    "start" : "tsc --watch magiclauren.ts"
+  },
+  "devDependencies": {
+    "tsc": "^1.20150623.0"
+  }
+}
