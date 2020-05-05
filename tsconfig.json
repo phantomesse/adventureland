@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "removeComments": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"],
+  "output": "build"
+}
