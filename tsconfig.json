@@ -1,9 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "amd",
     "removeComments": true
-  },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules"],
-  "output": "build"
+  }
 }

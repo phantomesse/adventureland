@@ -21,7 +21,7 @@ class Function {
     let parameters = this.parameters
       .map((parameter) => parameter.toString())
       .join(', ');
-    return `  function ${this.name}(${parameters}) : any;`;
+    return `function ${this.name}(${parameters}) : any;`;
   }
 }
 
@@ -58,8 +58,8 @@ class Parameter {
 }
 
 let interfaces = [
-  _createInterface('data/target.md', 'Target'),
-  _createInterface('data/character.md', 'Character'),
+  _createInterface('definitions/target.md', 'Target'),
+  _createInterface('definitions/character.md', 'Character'),
 ];
 
 https.get(runnerFunctions, function (response) {
@@ -80,7 +80,7 @@ function _createInterface(propertiesFileName, interfaceName) {
     .map((line) => new Parameter(line))
     .map((parameter) => '  ' + parameter.toString() + ';')
     .join('\n');
-  return `export interface ${interfaceName} {\n${parameters}\n}`;
+  return `interface ${interfaceName} {\n${parameters}\n}\n`;
 }
 
 function _extractHeaders(data) {
@@ -94,13 +94,12 @@ function _extractHeaders(data) {
 }
 
 function _writeToHeadersFile(interfaces, headers) {
-  let data =
-    `export {};\n` +
-    interfaces.join('\n') +
-    `\ndeclare global {\n` +
-    `let character: Character;` +
-    `${headers.join('\n')}\n}`;
-  let file = fs.createWriteStream('headers.d.ts');
+  let data = [
+    `let ${new Parameter('character')};`,
+    ...headers,
+    ...interfaces,
+  ].join('\n');
+  let file = fs.createWriteStream('global.d.ts');
   file.on('error', console.log);
   file.write(data);
   file.end();

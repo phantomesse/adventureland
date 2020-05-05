@@ -1,5 +1,2 @@
-import bindKeys from '../tasks/bind-keys';
-import fight from '../tasks/fight';
-
-bindKeys();
-fight();
+/// <reference path="../tasks/bind-keys.ts" />
+/// <reference path="../tasks/fight.ts" />
