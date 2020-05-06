@@ -2,10 +2,11 @@
   "name": "adventureland",
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "node definitions/extract-definitions.js",
+    "postinstall": "gulp extract_definitions",
     "start": "gulp"
   },
   "devDependencies": {
+    "@types/node": "^13.13.5",
     "gulp": "^4.0.2",
     "gulp-typescript": "^6.0.0-alpha.1",
     "typescript": "^3.8.3"

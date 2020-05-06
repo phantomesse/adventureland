@@ -24,7 +24,7 @@ function _invite_to_party(name: string) {
 
 function on_party_invite(name: string) {
   if (!laurens.includes(name)) {
-    game_log(`Not accepting ${name}'s invite`);
+    game_log(`Not accepting ${name}'s invite`, character_color);
     return;
   }
   accept_party_invite(name);

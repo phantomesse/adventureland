@@ -1,7 +1,11 @@
+/// <reference path="../tasks/variables.ts" />
+/// <reference path="../global.d.ts" />
 /// <reference path="../tasks/bind-keys.ts" />
 /// <reference path="../tasks/party.ts" />
 /// <reference path="../tasks/stay-close.ts" />
 /// <reference path="../tasks/heal.ts" />
+
+character_color = '#DA76E0';
 
 setInterval(function () {
   _healHp(character);
@@ -10,7 +14,7 @@ setInterval(function () {
 
   if (is_moving(character)) return;
 
-  _healParty();
+  // _healParty();
 }, 1000 / 4);
 
 function _healParty() {

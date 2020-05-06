@@ -1,13 +1,13 @@
+let character_color;
 map_key('W', 'move_up');
 map_key('S', 'move_down');
 map_key('A', 'move_left');
 map_key('D', 'move_right');
-var laurens = ['MagicLauren', 'ArcherLauren', 'HealerLauren', 'RichLauren'];
+const laurens = ['MagicLauren', 'ArcherLauren', 'HealerLauren', 'RichLauren'];
 if (!character.bot) {
-    var otherLaurens = laurens.filter(function (lauren) { return lauren != character.name; });
-    var activeCharacters = get_active_characters();
-    for (var _i = 0, otherLaurens_1 = otherLaurens; _i < otherLaurens_1.length; _i++) {
-        var lauren = otherLaurens_1[_i];
+    const otherLaurens = laurens.filter((lauren) => lauren != character.name);
+    let activeCharacters = get_active_characters();
+    for (const lauren of otherLaurens) {
         if (lauren in activeCharacters)
             stop_character(lauren);
         start_character(lauren, 'load');
@@ -15,16 +15,16 @@ if (!character.bot) {
     }
 }
 function _invite_to_party(name) {
-    var activeCharacters = get_active_characters();
+    let activeCharacters = get_active_characters();
     if (name in activeCharacters && ['code'].includes(activeCharacters[name])) {
         send_party_invite(name);
         return;
     }
-    setTimeout(function () { return _invite_to_party(name); }, 1000);
+    setTimeout(() => _invite_to_party(name), 1000);
 }
 function on_party_invite(name) {
     if (!laurens.includes(name)) {
-        game_log("Not accepting " + name + "'s invite");
+        game_log(`Not accepting ${name}'s invite`, character_color);
         return;
     }
     accept_party_invite(name);
@@ -35,16 +35,16 @@ setInterval(function () {
         character.party == character.name) {
         return;
     }
-    var leader = get_entity(character.party);
+    let leader = get_entity(character.party);
     if (!leader) {
-        game_log('help im faraway');
+        game_log("Help! I'm far away.", character_color);
         send_cm(character.party, { faraway: true });
         return;
     }
-    var distance = Math.sqrt(Math.pow(character.x - leader.x, 2) + Math.pow(character.y - leader.y, 2));
+    let distance = Math.sqrt(Math.pow(character.x - leader.x, 2) + Math.pow(character.y - leader.y, 2));
     if (distance < Math.min(Math.max(character.range, leader.range), 80))
         return;
-    game_log('moving closer to party leader');
+    game_log(`${character.party}, I'm coming!`, character_color);
     move(leader.x, leader.y);
 }, 1000 / 4);
 function on_cm(name, data) {
@@ -56,55 +56,44 @@ function on_cm(name, data) {
     }
 }
 function _healHp(character) {
-    var hpDiff = character.max_hp - character.hp;
+    const hpDiff = character.max_hp - character.hp;
     if (hpDiff < 50)
         return;
-    if (!is_on_cooldown('regen_mp') &&
-        !is_on_cooldown('regen_hp') &&
-        !is_on_cooldown('use_mp') &&
-        !is_on_cooldown('use_hp')) {
-        game_log('using regen hp');
-        use_skill('regen_hp', character);
-        return;
-    }
+    if (!_is_on_hp_mp_cooldown())
+        return use_skill('regen_hp', character);
     if (hpDiff < 200 || is_on_cooldown('use_hp'))
         return;
-    game_log('using hp potion');
     use_skill('use_hp');
 }
 function _healMp(character) {
-    var mpDiff = character.max_mp - character.mp;
+    const mpDiff = character.max_mp - character.mp;
     if (mpDiff < 100)
         return;
-    if (!is_on_cooldown('regen_mp') &&
-        !is_on_cooldown('regen_hp') &&
-        !is_on_cooldown('use_mp') &&
-        !is_on_cooldown('use_hp')) {
-        game_log('using regen mp');
-        use_skill('regen_mp', character);
-        return;
-    }
+    if (!_is_on_hp_mp_cooldown())
+        return use_skill('regen_mp', character);
     if (mpDiff < 200 || is_on_cooldown('use_mp'))
         return;
-    game_log('using mp potion');
     use_skill('use_mp');
 }
+function _is_on_hp_mp_cooldown() {
+    const actions = ['regen_mp', 'regen_hp', 'use_mp', 'use_hp'];
+    return actions.filter(is_on_cooldown).length > 0;
+}
+character_color = '#DA76E0';
 setInterval(function () {
     _healHp(character);
     _healMp(character);
     loot();
     if (is_moving(character))
         return;
-    _healParty();
 }, 1000 / 4);
 function _healParty() {
     if (is_on_cooldown('partyheal'))
         return;
-    var partyMembers = get_party();
-    var totalHpDiff = 0;
-    for (var _i = 0, partyMembers_1 = partyMembers; _i < partyMembers_1.length; _i++) {
-        var partyMemberName = partyMembers_1[_i];
-        var player = get_player(partyMemberName);
+    let partyMembers = get_party();
+    let totalHpDiff = 0;
+    for (let partyMemberName of partyMembers) {
+        let player = get_player(partyMemberName);
         if (player.hp / player.max_hp < 0.5 && !is_on_cooldown('heal')) {
             game_log('healing ' + partyMemberName);
             use_skill('heal');

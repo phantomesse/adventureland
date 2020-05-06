@@ -1,4 +1,5 @@
 /// <reference path="../global.d.ts" />
+/// <reference path="variables.ts" />
 /// <reference path="heal.ts" />
 
 setInterval(function () {
@@ -22,9 +23,7 @@ setInterval(function () {
   }
 
   _moveWithinRange(character, target);
-
   if (can_attack(target)) attack(target);
-
   _moveOutOfRange(character, target);
 }, 1000 / 4);
 

@@ -11,7 +11,7 @@ setInterval(function () {
 
   let leader = get_entity(character.party);
   if (!leader) {
-    game_log('help im faraway');
+    game_log("Help! I'm far away.", character_color);
     send_cm(character.party, { faraway: true });
     return;
   }
@@ -20,7 +20,7 @@ setInterval(function () {
     Math.pow(character.x - leader.x, 2) + Math.pow(character.y - leader.y, 2)
   );
   if (distance < Math.min(Math.max(character.range, leader.range), 80)) return;
-  game_log('moving closer to party leader');
+  game_log(`${character.party}, I'm coming!`, character_color);
   move(leader.x, leader.y);
 }, 1000 / 4);
 
