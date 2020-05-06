@@ -1,7 +1,7 @@
-const fs = require('fs');
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const tsConfig = require('./tsconfig.json');
+const exec = require('child_process').exec;
 
 function _compileCharacter(character) {
   let config = tsConfig.compilerOptions;
@@ -33,6 +33,10 @@ exports.compileRichLauren = function compileRichLauren() {
   return _compileCharacter('richLauren');
 };
 
+exports.extractDefinitions = function extractDefinitions(done) {
+  exec('node definitions/extract-definitions.js');
+  done();
+};
 exports.compileAllCharacters = gulp.parallel(
   exports.compileArcherLauren,
   exports.compileHealerLauren,

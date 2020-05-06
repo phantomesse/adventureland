@@ -18,8 +18,18 @@ class Function {
 
   get returnType() {
     if (this.name.startsWith('is_')) return 'boolean';
+    switch (this.name) {
+      case 'get_player':
+        return 'Character';
+      case 'say':
+      case 'loot':
+        return 'void';
+      case 'get_monster':
+      case 'get_nearest_hostile':
+      case 'get_nearest_monster':
+        return 'Target';
+    }
     return 'any';
-    _;
   }
 
   get declaration() {
@@ -71,7 +81,7 @@ let interfaces = [
 ];
 
 https.get(runnerFunctions, function (response) {
-  let headers = [];
+  let headers = _extractHeaders('function get_party()');
   response.on('data', (data) => {
     headers = headers.concat(_extractHeaders(data.toString('utf8')));
   });
@@ -115,7 +125,7 @@ function _writeToHeadersFile(interfaces, headers) {
           .join('\n')}`
     ),
     ...headers.map((header) => `  ${header}`),
-    '}',
+    '}\n',
   ].join('\n');
   let file = fs.createWriteStream('global.d.ts');
   file.on('error', console.log);

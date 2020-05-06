@@ -29,6 +29,40 @@ function on_party_invite(name) {
     }
     accept_party_invite(name);
 }
+function _healHp(character) {
+    var hpDiff = character.max_hp - character.hp;
+    if (hpDiff < 50)
+        return;
+    if (!is_on_cooldown('regen_mp') &&
+        !is_on_cooldown('regen_hp') &&
+        !is_on_cooldown('use_mp') &&
+        !is_on_cooldown('use_hp')) {
+        game_log('using regen hp');
+        use_skill('regen_hp', character);
+        return;
+    }
+    if (hpDiff < 200 || is_on_cooldown('use_hp'))
+        return;
+    game_log('using hp potion');
+    use_skill('use_hp');
+}
+function _healMp(character) {
+    var mpDiff = character.max_mp - character.mp;
+    if (mpDiff < 100)
+        return;
+    if (!is_on_cooldown('regen_mp') &&
+        !is_on_cooldown('regen_hp') &&
+        !is_on_cooldown('use_mp') &&
+        !is_on_cooldown('use_hp')) {
+        game_log('using regen mp');
+        use_skill('regen_mp', character);
+        return;
+    }
+    if (mpDiff < 200 || is_on_cooldown('use_mp'))
+        return;
+    game_log('using mp potion');
+    use_skill('use_mp');
+}
 setInterval(function () {
     _healHp(character);
     _healMp(character);
@@ -49,34 +83,6 @@ setInterval(function () {
         attack(target);
     _moveOutOfRange(character, target);
 }, 1000 / 4);
-function _healHp(character) {
-    var hpDiff = character.max_hp - character.hp;
-    if (hpDiff < 50)
-        return;
-    if (!is_on_cooldown('regen_hp')) {
-        game_log('using regen hp');
-        use_skill('regen_hp', character);
-        return;
-    }
-    if (hpDiff < 200 || is_on_cooldown('use_hp'))
-        return;
-    game_log('using hp potion');
-    use_skill('use_hp');
-}
-function _healMp(character) {
-    var mpDiff = character.max_mp - character.mp;
-    if (mpDiff < 100)
-        return;
-    if (!is_on_cooldown('regen_mp')) {
-        game_log('using regen mp');
-        use_skill('regen_mp', character);
-        return;
-    }
-    if (mpDiff < 200 || is_on_cooldown('use_mp'))
-        return;
-    game_log('using mp potion');
-    use_skill('use_mp');
-}
 function _moveWithinRange(character, target) {
     var distance = Math.sqrt(Math.pow(character.x - target.x, 2) + Math.pow(character.y - target.y, 2));
     if (distance < character.range)

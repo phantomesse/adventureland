@@ -55,3 +55,68 @@ function on_cm(name, data) {
         smart_move(data.x, data.y);
     }
 }
+function _healHp(character) {
+    var hpDiff = character.max_hp - character.hp;
+    if (hpDiff < 50)
+        return;
+    if (!is_on_cooldown('regen_mp') &&
+        !is_on_cooldown('regen_hp') &&
+        !is_on_cooldown('use_mp') &&
+        !is_on_cooldown('use_hp')) {
+        game_log('using regen hp');
+        use_skill('regen_hp', character);
+        return;
+    }
+    if (hpDiff < 200 || is_on_cooldown('use_hp'))
+        return;
+    game_log('using hp potion');
+    use_skill('use_hp');
+}
+function _healMp(character) {
+    var mpDiff = character.max_mp - character.mp;
+    if (mpDiff < 100)
+        return;
+    if (!is_on_cooldown('regen_mp') &&
+        !is_on_cooldown('regen_hp') &&
+        !is_on_cooldown('use_mp') &&
+        !is_on_cooldown('use_hp')) {
+        game_log('using regen mp');
+        use_skill('regen_mp', character);
+        return;
+    }
+    if (mpDiff < 200 || is_on_cooldown('use_mp'))
+        return;
+    game_log('using mp potion');
+    use_skill('use_mp');
+}
+setInterval(function () {
+    _healHp(character);
+    _healMp(character);
+    loot();
+    if (is_moving(character))
+        return;
+    _healParty();
+}, 1000 / 4);
+function _healParty() {
+    if (is_on_cooldown('partyheal'))
+        return;
+    var partyMembers = get_party();
+    var totalHpDiff = 0;
+    for (var _i = 0, partyMembers_1 = partyMembers; _i < partyMembers_1.length; _i++) {
+        var partyMemberName = partyMembers_1[_i];
+        var player = get_player(partyMemberName);
+        if (player.hp / player.max_hp < 0.5 && !is_on_cooldown('heal')) {
+            game_log('healing ' + partyMemberName);
+            use_skill('heal');
+            return;
+        }
+        totalHpDiff += player.max_hp - player.hp;
+    }
+    if (totalHpDiff > 500) {
+        game_log('party healing');
+        use_skill('partyheal');
+    }
+}
+function _curse() {
+    get_party();
+}

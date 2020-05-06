@@ -106,6 +106,7 @@ declare global {
     y?: number;
   }
   
+  function get_party() : any;
   function start_character(name?: string, code_slot_or_name?: any) : any;
   function stop_character(name?: string) : any;
   function get_active_characters() : any;
@@ -171,7 +172,7 @@ declare global {
   function move(x?: number, y?: number) : any;
   function show_json(e?: any) : any;
   function get_monster(id?: any) : any;
-  function get_player(name?: string) : any;
+  function get_player(name?: string) : Character;
   function get_entity(id?: any) : any;
   function find_npc(npc_id?: any) : any;
   function get_nearest_monster(args?: any) : any;
