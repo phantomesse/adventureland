@@ -13,7 +13,7 @@ if (!character.bot) {
   }
 }
 
-function _invite_to_party(name) {
+function _invite_to_party(name: string) {
   let activeCharacters = get_active_characters();
   if (name in activeCharacters && ['code'].includes(activeCharacters[name])) {
     send_party_invite(name);
@@ -22,12 +22,10 @@ function _invite_to_party(name) {
   setTimeout(() => _invite_to_party(name), 1000);
 }
 
-function on_party_invite(name) {
-  set_message('invited to a party by ' + name);
-  if (laurens.includes(name)) {
-    accept_party_invite(name);
-    set_message('accepted party invite!');
-  } else {
-    set_message(`Not accepting ${name}'s invite`);
+function on_party_invite(name: string) {
+  if (!laurens.includes(name)) {
+    game_log(`Not accepting ${name}'s invite`);
+    return;
   }
+  accept_party_invite(name);
 }

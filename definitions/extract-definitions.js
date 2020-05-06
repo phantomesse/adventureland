@@ -88,7 +88,7 @@ function _createInterface(propertiesFileName, interfaceName) {
     .map((line) => new Parameter(line))
     .map((parameter) => '  ' + parameter.toString() + ';')
     .join('\n');
-  return `interface ${interfaceName} {\n${parameters}\n}\n`;
+  return `class ${interfaceName} {\n${parameters}\n}\n`;
 }
 
 function _extractHeaders(data) {
@@ -103,10 +103,17 @@ function _extractHeaders(data) {
 
 function _writeToHeadersFile(interfaces, headers) {
   let data = [
-    ...interfaces,
     'export {}',
     'declare global {',
     `  let ${new Parameter('character', true)};`,
+    ...interfaces.map(
+      (interface) =>
+        `${interface
+          .toString()
+          .split('\n')
+          .map((line) => `  ${line}`)
+          .join('\n')}`
+    ),
     ...headers.map((header) => `  ${header}`),
     '}',
   ].join('\n');

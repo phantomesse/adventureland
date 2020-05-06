@@ -23,12 +23,9 @@ function _invite_to_party(name) {
     setTimeout(function () { return _invite_to_party(name); }, 1000);
 }
 function on_party_invite(name) {
-    set_message('invited to a party by ' + name);
-    if (laurens.includes(name)) {
-        accept_party_invite(name);
-        set_message('accepted party invite!');
+    if (!laurens.includes(name)) {
+        game_log("Not accepting " + name + "'s invite");
+        return;
     }
-    else {
-        set_message("Not accepting " + name + "'s invite");
-    }
+    accept_party_invite(name);
 }
