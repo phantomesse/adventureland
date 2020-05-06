@@ -1,3 +1,5 @@
+/// <reference path="../global.d.ts" />
+
 // Remapped keybindings.
 //
 // This should be included for every character.

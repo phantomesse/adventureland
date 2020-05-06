@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "amd",
-    "removeComments": true
+    "removeComments": true,
+    "lib": ["dom", "es2017"]
   }
 }

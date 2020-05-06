@@ -1,4 +1,5 @@
 attack
+bot
 c
 from_x
 from_y
@@ -14,6 +15,7 @@ max_mp
 move_num
 moving
 mp
+name
 on
 onc
 range

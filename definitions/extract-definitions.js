@@ -5,7 +5,6 @@ const runnerFunctions =
 
 class Function {
   constructor(fnDeclaration) {
-    this.fnDeclaration = fnDeclaration;
     this.name = fnDeclaration.substring(
       'function '.length,
       fnDeclaration.indexOf('(')
@@ -17,17 +16,24 @@ class Function {
       .map((parameterName) => new Parameter(parameterName));
   }
 
+  get returnType() {
+    if (this.name.startsWith('is_')) return 'boolean';
+    return 'any';
+    _;
+  }
+
   get declaration() {
     let parameters = this.parameters
       .map((parameter) => parameter.toString())
       .join(', ');
-    return `function ${this.name}(${parameters}) : any;`;
+    return `function ${this.name}(${parameters}) : ${this.returnType};`;
   }
 }
 
 class Parameter {
-  constructor(name) {
+  constructor(name, required) {
     this.name = name;
+    this.required = required;
     this.type = Parameter._getType(name);
   }
 
@@ -42,6 +48,8 @@ class Parameter {
       case 'y':
       case 'real_x':
       case 'real_y':
+      case 'x2':
+      case 'y2':
         return 'number';
       case 'target':
         return 'Target';
@@ -53,7 +61,7 @@ class Parameter {
   }
 
   toString() {
-    return `${this.name}?: ${this.type}`;
+    return `${this.name}${this.required ? '' : '?'}: ${this.type}`;
   }
 }
 
@@ -95,9 +103,12 @@ function _extractHeaders(data) {
 
 function _writeToHeadersFile(interfaces, headers) {
   let data = [
-    `let ${new Parameter('character')};`,
-    ...headers,
     ...interfaces,
+    'export {}',
+    'declare global {',
+    `  let ${new Parameter('character', true)};`,
+    ...headers.map((header) => `  ${header}`),
+    '}',
   ].join('\n');
   let file = fs.createWriteStream('global.d.ts');
   file.on('error', console.log);

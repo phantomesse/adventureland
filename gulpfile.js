@@ -7,27 +7,36 @@ function _compileCharacter(character) {
   let config = tsConfig.compilerOptions;
   config.outFile = `${character}.js`;
   return gulp
-    .src([`characters/${character}.ts`, 'tasks/*.ts'])
+    .src([`characters/${character}.ts`])
     .pipe(ts(config).on('error', console.log))
     .pipe(gulp.dest(`build`));
 }
 
 function _watch(done) {
-  // Get all the characters.
-  let characters = fs
-    .readdirSync('characters')
-    .map((file) => file.split('.')[0]);
-
-  // Compile all the characters initially.
-  for (let character of characters) {
-    _compileCharacter(character);
-  }
-
-  // Watch for changes and compile appropriately.
-  for (let character of characters) {
-    gulp.watch(`characters/${character}.ts`, _compileCharacter(character));
-  }
+  gulp.watch(['**/*.ts'], exports.compileAllCharacters);
   done();
 }
 
-gulp.task('default', _watch);
+exports.compileArcherLauren = function compileArcherLauren() {
+  return _compileCharacter('archerLauren');
+};
+
+exports.compileHealerLauren = function compileHealerLauren() {
+  return _compileCharacter('healerLauren');
+};
+
+exports.compileMagicLauren = function compileMagicLauren() {
+  return _compileCharacter('magicLauren');
+};
+
+exports.compileRichLauren = function compileRichLauren() {
+  return _compileCharacter('richLauren');
+};
+
+exports.compileAllCharacters = gulp.parallel(
+  exports.compileArcherLauren,
+  exports.compileHealerLauren,
+  exports.compileMagicLauren,
+  exports.compileRichLauren
+);
+exports.default = gulp.series(exports.compileAllCharacters, _watch);
